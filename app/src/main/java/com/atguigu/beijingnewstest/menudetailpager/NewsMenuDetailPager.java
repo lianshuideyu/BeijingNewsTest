@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import com.atguigu.beijingnewstest.R;
 import com.atguigu.beijingnewstest.base.MenuDetailBasePager;
 import com.atguigu.beijingnewstest.domain.NewsCenterBean;
+import com.viewpagerindicator.TabPageIndicator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +28,8 @@ public class NewsMenuDetailPager extends MenuDetailBasePager {
      * 新闻详情页面的数据
      */
     private final List<NewsCenterBean.DataBean.ChildrenBean> childrenData;
+    @InjectView(R.id.indicator)
+    TabPageIndicator indicator;
 
     /**
      * 页签页面的集合
@@ -47,7 +50,7 @@ public class NewsMenuDetailPager extends MenuDetailBasePager {
         //新闻详情页面
         View view = View.inflate(context, R.layout.news_menu_detail_pager, null);
 
-        ButterKnife.inject(this,view);
+        ButterKnife.inject(this, view);
         return view;
     }
 
@@ -57,16 +60,26 @@ public class NewsMenuDetailPager extends MenuDetailBasePager {
 
         //准备数据--页面
         tabDetailPagers = new ArrayList<>();
-        for(int i = 0; i < childrenData.size(); i++) {
-            tabDetailPagers.add(new TabDetailPager(context,childrenData.get(i)));
+
+        //根据有多少数据创建多少个TabDetailPager，并且把数据传入到对象中
+        for (int i = 0; i < childrenData.size(); i++) {
+            tabDetailPagers.add(new TabDetailPager(context, childrenData.get(i)));
 
         }
         //设置适配器
         viewpager.setAdapter(new MyPagerAdapter());
 
+        //要在设置适配器之后
+        indicator.setViewPager(viewpager);
+        //监听页面的变化用TabPageIndicator
     }
 
     private class MyPagerAdapter extends PagerAdapter {
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return childrenData.get(position).getTitle();
+        }
+
         @Override
         public int getCount() {
             return tabDetailPagers.size();
@@ -77,7 +90,7 @@ public class NewsMenuDetailPager extends MenuDetailBasePager {
             TabDetailPager tabDetailPager = tabDetailPagers.get(position);
             View rootView = tabDetailPager.rootView;
             container.addView(rootView);
-            tabDetailPager.initData();
+            tabDetailPager.initData();//不要忘记
 
             return rootView;
         }
