@@ -12,6 +12,7 @@ import com.atguigu.beijingnewstest.base.BasePager;
 import com.atguigu.beijingnewstest.pager.HomePager;
 import com.atguigu.beijingnewstest.pager.NewsPager;
 import com.atguigu.beijingnewstest.pager.SettingPager;
+import com.atguigu.beijingnewstest.view.NoViewPager;
 
 import java.util.ArrayList;
 
@@ -25,7 +26,7 @@ import butterknife.InjectView;
 public class ContentFragment extends BaseFragment {
 
     @InjectView(R.id.vp)
-    ViewPager vp;
+    NoViewPager vp;
     @InjectView(R.id.rg_main)
     RadioGroup rgMain;
 
@@ -100,7 +101,7 @@ public class ContentFragment extends BaseFragment {
 
         @Override
         public void onPageSelected(int position) {
-            switch (position) {
+            /*switch (position) {
                 case 0 :
                     rgMain.check(R.id.rb_home);
                     break;
@@ -110,7 +111,7 @@ public class ContentFragment extends BaseFragment {
                 case 2 :
                     rgMain.check(R.id.rb_setting);
                     break;
-            }
+            }*/
 
         }
 
