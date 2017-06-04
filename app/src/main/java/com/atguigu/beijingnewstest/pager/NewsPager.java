@@ -2,6 +2,7 @@ package com.atguigu.beijingnewstest.pager;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.Gravity;
 import android.widget.TextView;
 
@@ -21,6 +22,7 @@ public class NewsPager extends BasePager {
     @Override
     public void initData() {
         super.initData();
+        Log.e("TAG","NewsPager--initData");
 
         tvTitle.setText("新闻页面");
         //创建子类的视图

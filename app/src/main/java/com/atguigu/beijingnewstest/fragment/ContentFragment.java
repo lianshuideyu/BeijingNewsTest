@@ -54,7 +54,9 @@ public class ContentFragment extends BaseFragment {
 
         rgMain.setOnCheckedChangeListener(new MyOnCheckedChangeListener());
         //设置默认选择
-        rgMain.check(R.id.rb_news);
+        rgMain.check(R.id.rb_home);
+
+        pagers.get(0).initData();
     }
 
 
@@ -76,7 +78,7 @@ public class ContentFragment extends BaseFragment {
             BasePager basePager = pagers.get(position);
             View rootView = basePager.rootView;
             container.addView(rootView);
-            basePager.initData();
+            //basePager.initData();
 
             return rootView;
         }
@@ -101,17 +103,8 @@ public class ContentFragment extends BaseFragment {
 
         @Override
         public void onPageSelected(int position) {
-            /*switch (position) {
-                case 0 :
-                    rgMain.check(R.id.rb_home);
-                    break;
-                case 1 :
-                    rgMain.check(R.id.rb_news);
-                    break;
-                case 2 :
-                    rgMain.check(R.id.rb_setting);
-                    break;
-            }*/
+            BasePager basePager = pagers.get(position);
+            basePager.initData();
 
         }
 

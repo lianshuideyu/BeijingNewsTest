@@ -2,6 +2,7 @@ package com.atguigu.beijingnewstest.pager;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.Gravity;
 import android.widget.TextView;
 
@@ -21,6 +22,7 @@ public class HomePager extends BasePager {
     @Override
     public void initData() {
         super.initData();
+        Log.e("TAG","HomePager--initData");
 
         tvTitle.setText("主页面");
         //创建子类的视图
