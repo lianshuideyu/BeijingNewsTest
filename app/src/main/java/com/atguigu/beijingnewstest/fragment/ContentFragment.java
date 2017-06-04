@@ -33,7 +33,7 @@ public class ContentFragment extends BaseFragment {
     @InjectView(R.id.rg_main)
     RadioGroup rgMain;
 
-    private ArrayList<BasePager> pagers;
+    public ArrayList<BasePager> pagers;
 
     @Override
     public View initView() {

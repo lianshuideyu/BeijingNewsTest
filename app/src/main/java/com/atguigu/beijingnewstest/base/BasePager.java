@@ -7,9 +7,11 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.atguigu.beijingnewstest.R;
+import com.atguigu.beijingnewstest.activity.MainActivity;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
 
 /**
  * Created by Administrator on 2017/6/2.
@@ -32,11 +34,22 @@ public class BasePager {
         this.context = context;
 
         rootView = View.inflate(context, R.layout.base_pager, null);
-        ButterKnife.inject(this,rootView);
+        ButterKnife.inject(this, rootView);
     }
 
 
     public void initData() {
+
+    }
+
+    @OnClick(R.id.ib_menu)
+    public void onViewClicked() {
+        MainActivity mainActivity = (MainActivity) context;
+        mainActivity.getSlidingMenu().toggle();
+    }
+
+
+    public void swichPager(int positon) {
 
     }
 }

@@ -61,4 +61,10 @@ public class MainActivity extends SlidingFragmentActivity {
 
         return fragmentByTag;
     }
+
+    public ContentFragment getContentFragment() {
+        ContentFragment fragmentByTag = (ContentFragment) getSupportFragmentManager().findFragmentByTag(MAIN_TAG);
+
+        return fragmentByTag;
+    }
 }

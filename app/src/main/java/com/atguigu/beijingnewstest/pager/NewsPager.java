@@ -4,10 +4,12 @@ import android.content.Context;
 import android.graphics.Color;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.View;
 import android.widget.TextView;
 
 import com.atguigu.beijingnewstest.activity.MainActivity;
 import com.atguigu.beijingnewstest.base.BasePager;
+import com.atguigu.beijingnewstest.base.MenuDetailBasePager;
 import com.atguigu.beijingnewstest.domain.NewsCenterBean;
 import com.atguigu.beijingnewstest.fragment.LeftMenuFragment;
 import com.atguigu.beijingnewstest.utils.ConstantUtils;
@@ -15,6 +17,7 @@ import com.google.gson.Gson;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import okhttp3.Call;
@@ -26,6 +29,8 @@ import okhttp3.Call;
 public class NewsPager extends BasePager {
 
     private List<NewsCenterBean.DataBean> datas;
+
+    private ArrayList<MenuDetailBasePager> pagers;
 
     public NewsPager(Context context) {
         super(context);
@@ -44,11 +49,15 @@ public class NewsPager extends BasePager {
         textView.setTextColor(Color.RED);
         textView.setTextSize(25);
 
+        ibMenu.setVisibility(View.VISIBLE);
+
         //添加到Fragment布局上
         flContent.addView(textView);
 
         //联网获取数据
         getDataFromNet();
+
+
     }
 
     private void getDataFromNet() {
@@ -84,9 +93,29 @@ public class NewsPager extends BasePager {
         //给左侧菜单栏传递数据
         //1.得到MainActivity
         MainActivity mainActivity = (MainActivity) context;
+
+        //准备数据，当左侧栏点击切换的时候切换使用
+        pagers = new ArrayList<>();
+        pagers.add(new NewsMenuDetailPager(context));
+        pagers.add(new InteractMenuDetailPager(context));
+        pagers.add(new PhotosMenuDetailPager(context));
+        pagers.add(new TopicMenuDetailPager(context));
+        pagers.add(new VoteMenuDetailPager(context));
+
         //2.得到左侧菜单
         LeftMenuFragment leftMenuFragment = mainActivity.getLeftMenuFragment();
         //3.将数据传递给左侧菜单
         leftMenuFragment.setNewsData(datas);
+
+
+    }
+
+    @Override
+    public void swichPager(int positon) {
+        super.swichPager(positon);
+
+        flContent.removeAllViews();
+        flContent.addView(pagers.get(positon).rootView);
+        pagers.get(positon).initData();
     }
 }

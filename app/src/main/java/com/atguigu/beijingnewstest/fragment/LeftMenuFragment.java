@@ -12,6 +12,7 @@ import com.atguigu.beijingnewstest.R;
 import com.atguigu.beijingnewstest.activity.MainActivity;
 import com.atguigu.beijingnewstest.base.BaseFragment;
 import com.atguigu.beijingnewstest.domain.NewsCenterBean;
+import com.atguigu.beijingnewstest.pager.NewsPager;
 
 import java.util.List;
 
@@ -39,9 +40,21 @@ public class LeftMenuFragment extends BaseFragment {
 
                 MainActivity mainActivity = (MainActivity) context;
                 mainActivity.getSlidingMenu().toggle();//关<--->开
+
+                //点击切换新闻页面的内容
+                switchPager(prePositon);
+
+
             }
         });
         return listView;
+    }
+
+    private void switchPager(int positon) {
+        MainActivity mainActivity = (MainActivity) context;
+        ContentFragment contentFragment = mainActivity.getContentFragment();
+        NewsPager newsPager = (NewsPager) contentFragment.pagers.get(1);
+        newsPager.swichPager(positon);
     }
 
     @Override
@@ -66,6 +79,7 @@ public class LeftMenuFragment extends BaseFragment {
         adapter = new MyAdapter();
         listView.setAdapter(adapter);
 
+        switchPager(prePositon);
     }
 
 
