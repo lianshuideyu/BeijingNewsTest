@@ -12,6 +12,11 @@ import com.atguigu.beijingnewstest.base.BasePager;
 import com.atguigu.beijingnewstest.base.MenuDetailBasePager;
 import com.atguigu.beijingnewstest.domain.NewsCenterBean;
 import com.atguigu.beijingnewstest.fragment.LeftMenuFragment;
+import com.atguigu.beijingnewstest.menudetailpager.InteractMenuDetailPager;
+import com.atguigu.beijingnewstest.menudetailpager.NewsMenuDetailPager;
+import com.atguigu.beijingnewstest.menudetailpager.PhotosMenuDetailPager;
+import com.atguigu.beijingnewstest.menudetailpager.TopicMenuDetailPager;
+import com.atguigu.beijingnewstest.menudetailpager.VoteMenuDetailPager;
 import com.atguigu.beijingnewstest.utils.ConstantUtils;
 import com.google.gson.Gson;
 import com.zhy.http.okhttp.OkHttpUtils;
@@ -96,7 +101,7 @@ public class NewsPager extends BasePager {
 
         //准备数据，当左侧栏点击切换的时候切换使用
         pagers = new ArrayList<>();
-        pagers.add(new NewsMenuDetailPager(context));
+        pagers.add(new NewsMenuDetailPager(context,datas.get(0)));
         pagers.add(new InteractMenuDetailPager(context));
         pagers.add(new PhotosMenuDetailPager(context));
         pagers.add(new TopicMenuDetailPager(context));
