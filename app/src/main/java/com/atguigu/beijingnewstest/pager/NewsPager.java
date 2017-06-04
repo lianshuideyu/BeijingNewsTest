@@ -118,4 +118,5 @@ public class NewsPager extends BasePager {
         flContent.addView(pagers.get(positon).rootView);
         pagers.get(positon).initData();
     }
+
 }
