@@ -1,5 +1,6 @@
 package com.atguigu.beijingnewstest.fragment;
 
+import android.content.Context;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.View;
@@ -7,12 +8,14 @@ import android.view.ViewGroup;
 import android.widget.RadioGroup;
 
 import com.atguigu.beijingnewstest.R;
+import com.atguigu.beijingnewstest.activity.MainActivity;
 import com.atguigu.beijingnewstest.base.BaseFragment;
 import com.atguigu.beijingnewstest.base.BasePager;
 import com.atguigu.beijingnewstest.pager.HomePager;
 import com.atguigu.beijingnewstest.pager.NewsPager;
 import com.atguigu.beijingnewstest.pager.SettingPager;
 import com.atguigu.beijingnewstest.view.NoViewPager;
+import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 
 import java.util.ArrayList;
 
@@ -31,6 +34,7 @@ public class ContentFragment extends BaseFragment {
     RadioGroup rgMain;
 
     private ArrayList<BasePager> pagers;
+
     @Override
     public View initView() {
         View view = View.inflate(context, R.layout.fragment_content, null);
@@ -57,13 +61,8 @@ public class ContentFragment extends BaseFragment {
         rgMain.check(R.id.rb_home);
 
         pagers.get(0).initData();
-    }
 
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        ButterKnife.reset(this);
+        isEnableSlidingMenu(context,SlidingMenu.TOUCHMODE_NONE);
     }
 
 
@@ -106,6 +105,14 @@ public class ContentFragment extends BaseFragment {
             BasePager basePager = pagers.get(position);
             basePager.initData();
 
+            if (position == 1) {
+                //可以侧滑
+                isEnableSlidingMenu(context,SlidingMenu.TOUCHMODE_FULLSCREEN);
+            } else {
+                //不可以侧滑
+                isEnableSlidingMenu(context,SlidingMenu.TOUCHMODE_NONE);
+            }
+
         }
 
         @Override
@@ -114,20 +121,38 @@ public class ContentFragment extends BaseFragment {
         }
     }
 
+    /**
+     * 是否让SlidingMenu可以滑动
+     * @param context
+     * @param touchmodeFullscreen
+     */
+    private static void isEnableSlidingMenu(Context context,int touchmodeFullscreen) {
+        MainActivity mainActivity = (MainActivity) context;
+        SlidingMenu slidingMenu = mainActivity.getSlidingMenu();
+        slidingMenu.setTouchModeAbove(touchmodeFullscreen);
+    }
+
     private class MyOnCheckedChangeListener implements RadioGroup.OnCheckedChangeListener {
         @Override
         public void onCheckedChanged(RadioGroup radioGroup, int id) {
             switch (id) {
-                case R.id.rb_home :
-                    vp.setCurrentItem(0,false);
+                case R.id.rb_home:
+                    vp.setCurrentItem(0, false);
                     break;
-                case R.id.rb_news :
-                    vp.setCurrentItem(1,false);
+                case R.id.rb_news:
+                    vp.setCurrentItem(1, false);
                     break;
-                case R.id.rb_setting :
-                    vp.setCurrentItem(2,false);
+                case R.id.rb_setting:
+                    vp.setCurrentItem(2, false);
                     break;
             }
         }
+    }
+
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        ButterKnife.reset(this);
     }
 }
