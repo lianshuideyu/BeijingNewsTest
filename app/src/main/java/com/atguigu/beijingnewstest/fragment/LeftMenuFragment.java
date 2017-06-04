@@ -1,11 +1,15 @@
 package com.atguigu.beijingnewstest.fragment;
 
-import android.graphics.Color;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.BaseAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 
+import com.atguigu.beijingnewstest.R;
+import com.atguigu.beijingnewstest.activity.MainActivity;
 import com.atguigu.beijingnewstest.base.BaseFragment;
 import com.atguigu.beijingnewstest.domain.NewsCenterBean;
 
@@ -16,25 +20,35 @@ import java.util.List;
  */
 
 public class LeftMenuFragment extends BaseFragment {
-    private TextView textView;
+    private ListView listView;
 
+    private MyAdapter adapter;
     private List<NewsCenterBean.DataBean> datas;
+    private int prePositon = 0;
     @Override
     public View initView() {
-        textView = new TextView(context);
-        textView.setTextSize(30);
-        textView.setTextColor(Color.RED);
-        textView.setGravity(Gravity.CENTER);
+        listView = new ListView(context);
 
+        //设置ListView的item的点击事件
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int positon, long l) {
+                prePositon = positon;
+                //刷新适配器，重新调用适配器getView()方法
+                adapter.notifyDataSetChanged();
 
-        return textView;
+                MainActivity mainActivity = (MainActivity) context;
+                mainActivity.getSlidingMenu().toggle();//关<--->开
+            }
+        });
+        return listView;
     }
 
     @Override
     public void initData() {
         super.initData();
 
-        textView.setText("左侧页面");
+
     }
 
     /**
@@ -47,6 +61,43 @@ public class LeftMenuFragment extends BaseFragment {
         for(int i = 0; i < datas.size(); i++) {
             Log.e("TAG","传到左侧菜单的数据==" + datas.get(i).getTitle());
 
+        }
+
+        adapter = new MyAdapter();
+        listView.setAdapter(adapter);
+
+    }
+
+
+    private class MyAdapter extends BaseAdapter {
+        @Override
+        public int getCount() {
+            return datas == null ? 0 : datas.size();
+        }
+
+        @Override
+        public NewsCenterBean.DataBean getItem(int position) {
+            return datas.get(position);
+        }
+
+        @Override
+        public long getItemId(int i) {
+            return 0;
+        }
+
+        @Override
+        public View getView(int position, View itemView, ViewGroup viewGroup) {
+            //Log.e("TAG","适配器");
+            TextView textView = (TextView) View.inflate(context, R.layout.leftmenu_item,null);
+
+            textView.setText(datas.get(position).getTitle());
+            if(position == prePositon) {
+                textView.setEnabled(true);
+            }else {
+                textView.setEnabled(false);
+            }
+
+            return textView;
         }
     }
 }
