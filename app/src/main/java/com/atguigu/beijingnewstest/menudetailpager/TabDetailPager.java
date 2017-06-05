@@ -6,6 +6,7 @@ import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -34,12 +35,7 @@ import okhttp3.Call;
  */
 
 public class TabDetailPager extends MenuDetailBasePager {
-    @InjectView(R.id.viewpager)
-    ViewPager viewpager;
-    @InjectView(R.id.tv_title)
-    TextView tvTitle;
-    @InjectView(R.id.ll_point_group)
-    LinearLayout llPointGroup;
+
     @InjectView(R.id.lv)
     ListView lv;
 
@@ -49,6 +45,16 @@ public class TabDetailPager extends MenuDetailBasePager {
 
     private List<TabDetailPagerBean.DataBean.TopnewsBean> topnews;
     private int prePosition = 0;
+
+    /**
+     * 新闻列表数据集合
+     */
+    private List<TabDetailPagerBean.DataBean.NewsBean> newsBeanList;
+    private MyListAdapter adapter;
+
+    ViewPager viewpager;
+    TextView tvTitle;
+    LinearLayout llPointGroup;
 
     public TabDetailPager(Context context, NewsCenterBean.DataBean.ChildrenBean childrenBean) {
         super(context);
@@ -61,6 +67,14 @@ public class TabDetailPager extends MenuDetailBasePager {
         View view = View.inflate(context, R.layout.pager_tab_detail, null);
         ButterKnife.inject(this, view);
         //创建子类的视图
+
+        //顶部视图
+        View viewTopNews = View.inflate(context, R.layout.tab_detail_topnews, null);
+        viewpager = (ViewPager) viewTopNews.findViewById(R.id.viewpager);
+        tvTitle = (TextView) viewTopNews.findViewById(R.id.tv_title);
+        llPointGroup = (LinearLayout) viewTopNews.findViewById(R.id.ll_point_group);
+        //把顶部的部分已添加头的方式加入listview中
+        lv.addHeaderView(viewTopNews);
 
         //监听页面的变化
         viewpager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -97,7 +111,7 @@ public class TabDetailPager extends MenuDetailBasePager {
         //tvTitle.setText(childrenBean.getTitle());
 
         url = ConstantUtils.BASE_URL + childrenBean.getUrl();
-        Log.e("TAG","url=="+url);
+        Log.e("TAG", "url==" + url);
         //设置数据
         getDataFromNet();
     }
@@ -129,9 +143,9 @@ public class TabDetailPager extends MenuDetailBasePager {
     }
 
     private void processData(String response) {
-        TabDetailPagerBean bean = new Gson().fromJson(response,TabDetailPagerBean.class);
+        TabDetailPagerBean bean = new Gson().fromJson(response, TabDetailPagerBean.class);
 
-        Log.e("TAG",""+bean.getData().getNews().get(0).getTitle());
+        Log.e("TAG", "" + bean.getData().getNews().get(0).getTitle());
         topnews = bean.getData().getTopnews();
 
         viewpager.setAdapter(new MyPagerAdapter());
@@ -140,23 +154,29 @@ public class TabDetailPager extends MenuDetailBasePager {
 
         //添加图片viewPager的指示点
         llPointGroup.removeAllViews();//把之前的先移除掉
-        for(int i = 0; i < topnews.size(); i++) {
+        for (int i = 0; i < topnews.size(); i++) {
             ImageView point = new ImageView(context);
             point.setBackgroundResource(R.drawable.point_selector);
 
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(DensityUtil.dip2px(context,8),DensityUtil.dip2px(context,8));
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(DensityUtil.dip2px(context, 8), DensityUtil.dip2px(context, 8));
             point.setLayoutParams(params);
 
-            if(i == 0) {
+            if (i == 0) {
                 point.setEnabled(true);
-            }else{
+            } else {
                 point.setEnabled(false);
-                params.leftMargin = DensityUtil.dip2px(context,8);
+                params.leftMargin = DensityUtil.dip2px(context, 8);
             }
 
             //添加到线性布局中
             llPointGroup.addView(point);
         }
+
+        //设置listview的数据
+        newsBeanList = bean.getData().getNews();
+        adapter = new MyListAdapter();
+        lv.setAdapter(new MyListAdapter());
+
 
     }
 
@@ -193,6 +213,62 @@ public class TabDetailPager extends MenuDetailBasePager {
         @Override
         public boolean isViewFromObject(View view, Object object) {
             return view == object;
+        }
+    }
+
+    private class MyListAdapter extends BaseAdapter {
+        @Override
+        public int getCount() {
+            return newsBeanList.size();
+        }
+
+        @Override
+        public Object getItem(int i) {
+            return null;
+        }
+
+        @Override
+        public long getItemId(int i) {
+            return 0;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup viewGroup) {
+            ViewHolder viewHolder;
+            if (convertView == null) {
+                convertView = View.inflate(context, R.layout.item_tab_detail, null);
+                viewHolder = new ViewHolder(convertView);
+                convertView.setTag(viewHolder);
+            }else {
+                viewHolder = (ViewHolder) convertView.getTag();
+            }
+
+            //根据位置得到对应的数据
+            TabDetailPagerBean.DataBean.NewsBean newsBean = newsBeanList.get(position);
+            viewHolder.tvDesc.setText(newsBean.getTitle());
+            viewHolder.tvTime.setText(newsBean.getPubdate());
+
+            String imageUrl = ConstantUtils.BASE_URL+newsBean.getListimage();
+            Glide.with(context)
+                    .load(imageUrl)
+                    .placeholder(R.drawable.pic_item_list_default)
+                    .error(R.drawable.pic_item_list_default)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .into(viewHolder.ivIcon);
+            return convertView;
+        }
+
+    }
+    static class ViewHolder {
+        @InjectView(R.id.iv_icon)
+        ImageView ivIcon;
+        @InjectView(R.id.tv_desc)
+        TextView tvDesc;
+        @InjectView(R.id.tv_time)
+        TextView tvTime;
+
+        ViewHolder(View view) {
+            ButterKnife.inject(this, view);
         }
     }
 }
