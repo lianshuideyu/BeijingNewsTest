@@ -107,7 +107,7 @@ public class ContentFragment extends BaseFragment {
 
             if (position == 1) {
                 //可以侧滑
-                isEnableSlidingMenu(context,SlidingMenu.TOUCHMODE_FULLSCREEN);
+                isEnableSlidingMenu(context,SlidingMenu.TOUCHMODE_MARGIN);
             } else {
                 //不可以侧滑
                 isEnableSlidingMenu(context,SlidingMenu.TOUCHMODE_NONE);
