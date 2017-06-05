@@ -31,7 +31,6 @@ public class NewsMenuDetailPager extends MenuDetailBasePager {
 //    @InjectView(R.id.indicator)
 //    TabPageIndicator indicator;
 
-
     /**
      * 页签页面的集合
      */
