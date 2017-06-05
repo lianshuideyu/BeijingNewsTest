@@ -3,6 +3,7 @@ package com.atguigu.beijingnewstest.menudetailpager;
 import android.content.Context;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.atguigu.beijingnewstest.R;
 import com.atguigu.beijingnewstest.base.MenuDetailBasePager;
@@ -22,6 +24,8 @@ import com.atguigu.beijingnewstest.view.HorizontalScrollViewPager;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.gson.Gson;
+import com.handmark.pulltorefresh.library.PullToRefreshBase;
+import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
@@ -37,7 +41,8 @@ import okhttp3.Call;
 
 public class TabDetailPager extends MenuDetailBasePager {
 
-    @InjectView(R.id.lv)
+    @InjectView(R.id.pull_refresh_list)
+    PullToRefreshListView pull_refresh_list;
     ListView lv;
 
     private NewsCenterBean.DataBean.ChildrenBean childrenBean;
@@ -57,6 +62,9 @@ public class TabDetailPager extends MenuDetailBasePager {
     TextView tvTitle;
     LinearLayout llPointGroup;
 
+    private String moreUrl;//上拉刷新的链接
+    private boolean isLoadingMore = false;//判断是否为下拉刷新
+
     public TabDetailPager(Context context, NewsCenterBean.DataBean.ChildrenBean childrenBean) {
         super(context);
         this.childrenBean = childrenBean;
@@ -68,6 +76,9 @@ public class TabDetailPager extends MenuDetailBasePager {
         View view = View.inflate(context, R.layout.pager_tab_detail, null);
         ButterKnife.inject(this, view);
         //创建子类的视图
+
+        //得到ListView
+        lv = pull_refresh_list.getRefreshableView();
 
         //顶部视图
         View viewTopNews = View.inflate(context, R.layout.tab_detail_topnews, null);
@@ -102,6 +113,31 @@ public class TabDetailPager extends MenuDetailBasePager {
             }
         });
 
+        //设置上下来刷新的监听
+        pull_refresh_list.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<ListView>() {
+            @Override
+            public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView) {
+                //下拉刷新
+                isLoadingMore = false;
+                getDataFromNet(url);
+                Toast.makeText(context, "下拉刷新...", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView) {
+                //上拉加载更多
+                if(!TextUtils.isEmpty(moreUrl)) {
+                    isLoadingMore = true;
+                    getDataFromNet(moreUrl);
+                }else {
+                    Toast.makeText(context, "没有更多数据了...", Toast.LENGTH_SHORT).show();
+
+                }
+
+            }
+        });
+
+
         return view;
     }
 
@@ -114,10 +150,10 @@ public class TabDetailPager extends MenuDetailBasePager {
         url = ConstantUtils.BASE_URL + childrenBean.getUrl();
         Log.e("TAG", "url==" + url);
         //设置数据
-        getDataFromNet();
+        getDataFromNet(url);
     }
 
-    private void getDataFromNet() {
+    private void getDataFromNet(String url) {
 
         OkHttpUtils
                 .get()
@@ -137,6 +173,8 @@ public class TabDetailPager extends MenuDetailBasePager {
 //                        Log.e("TAG", "请求成功==" + response);
                         //缓存数据
                         processData(response);
+                        //结束刷新
+                        pull_refresh_list.onRefreshComplete();
                     }
 
 
@@ -147,36 +185,54 @@ public class TabDetailPager extends MenuDetailBasePager {
         TabDetailPagerBean bean = new Gson().fromJson(response, TabDetailPagerBean.class);
 
         Log.e("TAG", "" + bean.getData().getNews().get(0).getTitle());
-        topnews = bean.getData().getTopnews();
 
-        viewpager.setAdapter(new MyPagerAdapter());
-        //设置图片标题的文字
-        tvTitle.setText(topnews.get(prePosition).getTitle());
-
-        //添加图片viewPager的指示点
-        llPointGroup.removeAllViews();//把之前的先移除掉
-        for (int i = 0; i < topnews.size(); i++) {
-            ImageView point = new ImageView(context);
-            point.setBackgroundResource(R.drawable.point_selector);
-
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(DensityUtil.dip2px(context, 8), DensityUtil.dip2px(context, 8));
-            point.setLayoutParams(params);
-
-            if (i == 0) {
-                point.setEnabled(true);
-            } else {
-                point.setEnabled(false);
-                params.leftMargin = DensityUtil.dip2px(context, 8);
-            }
-
-            //添加到线性布局中
-            llPointGroup.addView(point);
+        String more = bean.getData().getMore();
+        if(!TextUtils.isEmpty(more)) {
+            moreUrl = ConstantUtils.BASE_URL +  more;
         }
 
-        //设置listview的数据
-        newsBeanList = bean.getData().getNews();
-        adapter = new MyListAdapter();
-        lv.setAdapter(new MyListAdapter());
+        if(!isLoadingMore) {
+            //下拉刷新
+            topnews = bean.getData().getTopnews();
+
+            viewpager.setAdapter(new MyPagerAdapter());
+            //设置图片标题的文字
+            tvTitle.setText(topnews.get(prePosition).getTitle());
+
+            //添加图片viewPager的指示点
+            llPointGroup.removeAllViews();//把之前的先移除掉
+            for (int i = 0; i < topnews.size(); i++) {
+                ImageView point = new ImageView(context);
+                point.setBackgroundResource(R.drawable.point_selector);
+
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(DensityUtil.dip2px(context, 8), DensityUtil.dip2px(context, 8));
+                point.setLayoutParams(params);
+
+                if (i == 0) {
+                    point.setEnabled(true);
+                } else {
+                    point.setEnabled(false);
+                    params.leftMargin = DensityUtil.dip2px(context, 8);
+                }
+
+                //添加到线性布局中
+                llPointGroup.addView(point);
+            }
+
+            //设置listview的数据
+            newsBeanList = bean.getData().getNews();
+            adapter = new MyListAdapter();
+            lv.setAdapter(new MyListAdapter());
+        }else {
+            isLoadingMore = false;
+            //上拉刷新
+            //把新的集合加进来
+            newsBeanList.addAll(bean.getData().getNews());
+            adapter.notifyDataSetChanged();
+        }
+
+
+
 
 
     }
