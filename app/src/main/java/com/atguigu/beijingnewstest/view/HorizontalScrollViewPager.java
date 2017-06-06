@@ -62,13 +62,13 @@ public class HorizontalScrollViewPager extends ViewPager {
                 if(distanceY < distanceX && distanceX > 8) {
                     //竖直移动
                     if(endX - startX > 0 && getCurrentItem() == 0) {
-                        //1.滑动方向是从左到右，并且是第0个位置，设置默认，让父层视图不禁用拦截方法
+                        //1.滑动方向是从左到右，并且是第0个位置，设置默认，请求父视图拦截
                         getParent().requestDisallowInterceptTouchEvent(false);
                     }else if(endX - startX < 0 && getCurrentItem() == getAdapter().getCount() - 1) {
-                        // 2.滑动方向是从右到左，并且是第最后一个位置，设置默认，让父层视图不禁用拦截方法
+                        // 2.滑动方向是从右到左，并且是第最后一个位置，设置默认，请求父视图拦截
                         getParent().requestDisallowInterceptTouchEvent(false);
                     }else {
-                        //中间页 3.其他就是中间部分
+                        //中间页 3.其他就是中间部分---请求父视图不拦截
                         getParent().requestDisallowInterceptTouchEvent(true);
                         //让父层视图不禁用拦截方法--就是拦截
                     }
