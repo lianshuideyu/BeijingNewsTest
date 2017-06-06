@@ -1,6 +1,7 @@
 package com.atguigu.beijingnewstest.menudetailpager;
 
 import android.content.Context;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -36,6 +37,8 @@ public class PhotosMenuDetailPager extends MenuDetailBasePager {
     RecyclerView recyclerview;
     @InjectView(R.id.progressbar)
     ProgressBar progressbar;
+    @InjectView(R.id.refresh_layout)
+    SwipeRefreshLayout refreshLayout;
 
     private String url;
     private List<PhotosMenuDetailPagerBean.DataBean.NewsBean> datas;
@@ -45,15 +48,24 @@ public class PhotosMenuDetailPager extends MenuDetailBasePager {
     public PhotosMenuDetailPager(Context context, NewsCenterBean.DataBean dataBean) {
         super(context);
         this.dataBean = dataBean;
-        Log.e("TAG","PhotosMenuDetailPager--dataBean=" + dataBean.getTitle());
+        Log.e("TAG", "PhotosMenuDetailPager--dataBean=" + dataBean.getTitle());
     }
 
     @Override
     public View initView() {
         //创建子类的视图
         View view = View.inflate(context, R.layout.pager_photos_menu_detail, null);
-        ButterKnife.inject(this,view);
+        ButterKnife.inject(this, view);
 
+        //设置刷新的监听
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                getDataFromNet(url);
+            }
+        });
+        //设置滑动多少距离有效果
+        //refreshLayout.setDistanceToTriggerSync(200);
 
         return view;
     }
@@ -85,50 +97,52 @@ public class PhotosMenuDetailPager extends MenuDetailBasePager {
                         Log.e("TAG", "图组请求成功==" + response);
                         //解析数据
                         processData(response);
-
                     }
-
                 });
-
     }
 
     /**
      * 解析数据
+     *
      * @param json
      */
     private void processData(String json) {
         PhotosMenuDetailPagerBean bean = new Gson().fromJson(json, PhotosMenuDetailPagerBean.class);
         datas = bean.getData().getNews();
 
-        if(datas != null && datas.size() >0){
+        if (datas != null && datas.size() > 0) {
             //有数据
             progressbar.setVisibility(View.GONE);
 
             //设置适配器
-            adapter = new PhotosMenuDetailPagerAdapater(context,datas);
+            adapter = new PhotosMenuDetailPagerAdapater(context, datas);
             recyclerview.setAdapter(adapter);
 
             //布局管理器不要忘记
-            recyclerview.setLayoutManager(new LinearLayoutManager(context,LinearLayoutManager.VERTICAL,false));
+            recyclerview.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
 
-        }else {
+        } else {
             progressbar.setVisibility(View.VISIBLE);
         }
+
+        //隐藏刷新效果（小圆圈）
+        refreshLayout.setRefreshing(false);
     }
 
     private boolean isShowList = false;
+
     public void switchListAndGrid(ImageButton ibSwitchListGrid) {
-        if(isShowList) {
+        if (isShowList) {
             //显示gridview
             ibSwitchListGrid.setBackgroundResource(R.drawable.icon_pic_list_type);
-            recyclerview.setLayoutManager(new GridLayoutManager(context,2,GridLayoutManager.VERTICAL,false));
+            recyclerview.setLayoutManager(new GridLayoutManager(context, 2, GridLayoutManager.VERTICAL, false));
 
-            isShowList =  false;
-        }else {
+            isShowList = false;
+        } else {
             //显示List
             //布局管理器
             ibSwitchListGrid.setBackgroundResource(R.drawable.icon_pic_grid_type);
-            recyclerview.setLayoutManager(new LinearLayoutManager(context,LinearLayoutManager.VERTICAL,false));
+            recyclerview.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
             isShowList = true;
         }
 
