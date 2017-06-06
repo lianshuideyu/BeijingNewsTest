@@ -28,6 +28,8 @@ public class BasePager {
     public ImageButton ibMenu;
     @InjectView(R.id.fl_content)
     public FrameLayout flContent;
+    @InjectView(R.id.ib_switch_list_grid)
+    public ImageButton ibSwitchListGrid;
 
 
     public BasePager(Context context) {

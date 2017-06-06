@@ -114,7 +114,7 @@ public class NewsPager extends BasePager {
         pagers = new ArrayList<>();
         pagers.add(new NewsMenuDetailPager(context,datas.get(0)));
         pagers.add(new InteractMenuDetailPager(context));
-        pagers.add(new PhotosMenuDetailPager(context));
+        pagers.add(new PhotosMenuDetailPager(context,datas.get(2)));
         pagers.add(new TopicMenuDetailPager(context));
         pagers.add(new VoteMenuDetailPager(context));
 
@@ -129,10 +129,15 @@ public class NewsPager extends BasePager {
     @Override
     public void swichPager(int positon) {
         super.swichPager(positon);
+        tvTitle.setText(datas.get(positon).getTitle());
 
         flContent.removeAllViews();
         flContent.addView(pagers.get(positon).rootView);
         pagers.get(positon).initData();
+
+        if(positon == 2) {
+            ibSwitchListGrid.setVisibility(View.VISIBLE);
+        }
     }
 
 }
