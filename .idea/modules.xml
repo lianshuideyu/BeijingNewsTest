@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/AndroidAndH5/AndroidAndH5.iml" filepath="$PROJECT_DIR$/AndroidAndH5/AndroidAndH5.iml" />
+      <module fileurl="file://$PROJECT_DIR$/AndroidAndJs-上课用/AndroidAndJs-上课用.iml" filepath="$PROJECT_DIR$/AndroidAndJs-上课用/AndroidAndJs-上课用.iml" />
       <module fileurl="file://$PROJECT_DIR$/BeiJingNewsLibrary/BeiJingNewsLibrary.iml" filepath="$PROJECT_DIR$/BeiJingNewsLibrary/BeiJingNewsLibrary.iml" />
       <module fileurl="file://$PROJECT_DIR$/BeijingNewsTest.iml" filepath="$PROJECT_DIR$/BeijingNewsTest.iml" />
       <module fileurl="file://$PROJECT_DIR$/PullToRefresh_library/PullToRefresh_library.iml" filepath="$PROJECT_DIR$/PullToRefresh_library/PullToRefresh_library.iml" />
