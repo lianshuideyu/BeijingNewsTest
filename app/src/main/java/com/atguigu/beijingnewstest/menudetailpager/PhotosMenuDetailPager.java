@@ -1,10 +1,12 @@
 package com.atguigu.beijingnewstest.menudetailpager;
 
 import android.content.Context;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
 
 import com.atguigu.beijingnewslibrary.utils.ConstantUtils;
@@ -114,4 +116,21 @@ public class PhotosMenuDetailPager extends MenuDetailBasePager {
         }
     }
 
+    private boolean isShowList = false;
+    public void switchListAndGrid(ImageButton ibSwitchListGrid) {
+        if(isShowList) {
+            //显示gridview
+            ibSwitchListGrid.setBackgroundResource(R.drawable.icon_pic_list_type);
+            recyclerview.setLayoutManager(new GridLayoutManager(context,2,GridLayoutManager.VERTICAL,false));
+
+            isShowList =  false;
+        }else {
+            //显示List
+            //布局管理器
+            ibSwitchListGrid.setBackgroundResource(R.drawable.icon_pic_grid_type);
+            recyclerview.setLayoutManager(new LinearLayoutManager(context,LinearLayoutManager.VERTICAL,false));
+            isShowList = true;
+        }
+
+    }
 }

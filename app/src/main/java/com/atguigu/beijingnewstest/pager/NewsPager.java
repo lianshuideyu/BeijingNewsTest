@@ -127,7 +127,7 @@ public class NewsPager extends BasePager {
     }
 
     @Override
-    public void swichPager(int positon) {
+    public void swichPager(final int positon) {
         super.swichPager(positon);
         tvTitle.setText(datas.get(positon).getTitle());
 
@@ -137,6 +137,18 @@ public class NewsPager extends BasePager {
 
         if(positon == 2) {
             ibSwitchListGrid.setVisibility(View.VISIBLE);
+            //ibSwitchListGrid点击事件
+            ibSwitchListGrid.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    PhotosMenuDetailPager photos = (PhotosMenuDetailPager) pagers.get(positon);
+                    photos.switchListAndGrid(ibSwitchListGrid);
+                }
+            });
+
+        }else {
+            //隐藏
+            ibSwitchListGrid.setVisibility(View.GONE);
         }
     }
 
