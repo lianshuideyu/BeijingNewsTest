@@ -16,13 +16,13 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.atguigu.beijingnewslibrary.utils.CacheUtils;
+import com.atguigu.beijingnewslibrary.utils.ConstantUtils;
+import com.atguigu.beijingnewslibrary.utils.DensityUtil;
 import com.atguigu.beijingnewstest.R;
 import com.atguigu.beijingnewstest.base.MenuDetailBasePager;
 import com.atguigu.beijingnewstest.domain.NewsCenterBean;
 import com.atguigu.beijingnewstest.domain.TabDetailPagerBean;
-import com.atguigu.beijingnewstest.utils.CacheUtils;
-import com.atguigu.beijingnewstest.utils.ConstantUtils;
-import com.atguigu.beijingnewstest.utils.DensityUtil;
 import com.atguigu.beijingnewstest.view.HorizontalScrollViewPager;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;

@@ -14,9 +14,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
+import com.atguigu.beijingnewslibrary.utils.CacheUtils;
+import com.atguigu.beijingnewslibrary.utils.DensityUtil;
 import com.atguigu.beijingnewstest.R;
-import com.atguigu.beijingnewstest.utils.CacheUtils;
-import com.atguigu.beijingnewstest.utils.DensityUtil;
 
 import java.util.ArrayList;
 

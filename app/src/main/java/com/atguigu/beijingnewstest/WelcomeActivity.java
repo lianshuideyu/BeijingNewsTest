@@ -10,9 +10,9 @@ import android.view.animation.RotateAnimation;
 import android.view.animation.ScaleAnimation;
 import android.widget.RelativeLayout;
 
+import com.atguigu.beijingnewslibrary.utils.CacheUtils;
 import com.atguigu.beijingnewstest.activity.GuideActivity;
 import com.atguigu.beijingnewstest.activity.MainActivity;
-import com.atguigu.beijingnewstest.utils.CacheUtils;
 
 public class WelcomeActivity extends AppCompatActivity {
 
