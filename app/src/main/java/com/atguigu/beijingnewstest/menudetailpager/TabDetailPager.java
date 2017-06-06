@@ -1,7 +1,9 @@
 package com.atguigu.beijingnewstest.menudetailpager;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
@@ -20,6 +22,7 @@ import com.atguigu.beijingnewslibrary.utils.CacheUtils;
 import com.atguigu.beijingnewslibrary.utils.ConstantUtils;
 import com.atguigu.beijingnewslibrary.utils.DensityUtil;
 import com.atguigu.beijingnewstest.R;
+import com.atguigu.beijingnewstest.activity.NewsDetailActivity;
 import com.atguigu.beijingnewstest.base.MenuDetailBasePager;
 import com.atguigu.beijingnewstest.domain.NewsCenterBean;
 import com.atguigu.beijingnewstest.domain.TabDetailPagerBean;
@@ -172,6 +175,13 @@ public class TabDetailPager extends MenuDetailBasePager {
                     //然后刷新适配器
                     adapter.notifyDataSetChanged();
                 }
+
+                //点击跳转到WebView的Activity
+                Intent intent = new Intent(context, NewsDetailActivity.class);
+                intent.setData(Uri.parse(ConstantUtils.BASE_URL + newsBean.getUrl()));
+
+                context.startActivity(intent);
+
             }
         });
 
