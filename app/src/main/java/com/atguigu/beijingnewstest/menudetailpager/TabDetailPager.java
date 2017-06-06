@@ -4,10 +4,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -128,7 +131,15 @@ public class TabDetailPager extends MenuDetailBasePager {
 
             @Override
             public void onPageScrollStateChanged(int state) {
-
+                if(state == ViewPager.SCROLL_STATE_DRAGGING) {
+                    //当viewpager拖拽的时候
+                    //消息移除
+                    handler.removeCallbacksAndMessages(null);
+                }else if(state == ViewPager.SCROLL_STATE_IDLE) {
+                    //当空闲的时候重新发送消息
+                    handler.removeCallbacksAndMessages(null);
+                    handler.postDelayed(new MyRunnable(),3000);
+                }
             }
         });
 
@@ -279,10 +290,38 @@ public class TabDetailPager extends MenuDetailBasePager {
             adapter.notifyDataSetChanged();
         }
 
+        /**
+         * 设置顶部轮播图片自动切换到下一个页面
+         */
+        if(handler == null) {
+            handler = new InternalHandler();
+        }
+        handler.removeCallbacksAndMessages(null);
 
+        //重新执行延迟任务
+        handler.postDelayed(new MyRunnable(),3000);
 
+    }
 
+    private InternalHandler handler;
+    class InternalHandler extends Handler{
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
 
+            //设置切换到下一个页面
+            int item = (viewpager.getCurrentItem() + 1)%topnews.size();
+            viewpager.setCurrentItem(item);
+
+            handler.postDelayed(new MyRunnable(),3000);
+        }
+    }
+
+    class MyRunnable implements Runnable{
+        @Override
+        public void run() {
+            handler.sendEmptyMessage(0);
+        }
     }
 
     private class MyPagerAdapter extends PagerAdapter {
@@ -306,6 +345,26 @@ public class TabDetailPager extends MenuDetailBasePager {
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(imageView);
             container.addView(imageView);
+
+            //设置图片的触摸事件
+            imageView.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View view, MotionEvent event) {
+                    switch (event.getAction()) {
+                        case  MotionEvent.ACTION_DOWN:
+                            handler.removeCallbacksAndMessages(null);
+                            Log.e("TAG","onTouch--ACTION_DOWN==");
+                            break;
+                        case  MotionEvent.ACTION_UP:
+                            handler.removeCallbacksAndMessages(null);
+                            handler.postDelayed(new MyRunnable(),3000);
+                            Log.e("TAG","onTouch--ACTION_UP==");
+                            break;
+                    }
+
+                    return true;
+                }
+            });
 
             return imageView;
         }
