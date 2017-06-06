@@ -29,6 +29,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.gson.Gson;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
+import com.handmark.pulltorefresh.library.extras.SoundPullEventListener;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
@@ -83,6 +84,17 @@ public class TabDetailPager extends MenuDetailBasePager {
 
         //得到ListView
         lv = pull_refresh_list.getRefreshableView();
+
+
+        /**
+         * Add Sound Event Listener
+         * 刷新的声音效果
+         */
+        SoundPullEventListener<ListView> soundListener = new SoundPullEventListener<ListView>(context);
+        soundListener.addSoundEvent(PullToRefreshBase.State.PULL_TO_REFRESH, R.raw.pull_event);
+        soundListener.addSoundEvent(PullToRefreshBase.State.RESET, R.raw.reset_sound);
+        soundListener.addSoundEvent(PullToRefreshBase.State.REFRESHING, R.raw.refreshing_sound);
+        pull_refresh_list.setOnPullEventListener(soundListener);
 
         //顶部视图
         View viewTopNews = View.inflate(context, R.layout.tab_detail_topnews, null);
