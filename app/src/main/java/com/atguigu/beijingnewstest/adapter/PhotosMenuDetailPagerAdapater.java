@@ -49,7 +49,7 @@ public class PhotosMenuDetailPagerAdapater extends RecyclerView.Adapter<PhotosMe
         //2.绑定数据
         holder.tvTitle.setText(newsBean.getTitle());
         //3.设置点击事件
-        String imageUrl = ConstantUtils.BASE_URL + newsBean.getListimage();
+        String imageUrl = ConstantUtils.BASE_URL + newsBean.getLargeimage();
         Glide.with(context)
                 .load(imageUrl)
                 .placeholder(R.drawable.pic_item_list_default)
