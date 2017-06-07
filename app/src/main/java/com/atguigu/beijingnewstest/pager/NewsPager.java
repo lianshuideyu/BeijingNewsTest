@@ -113,9 +113,9 @@ public class NewsPager extends BasePager {
         //准备数据，当左侧栏点击切换的时候切换使用
         pagers = new ArrayList<>();
         pagers.add(new NewsMenuDetailPager(context,datas.get(0)));
-        pagers.add(new InteractMenuDetailPager(context));
+        pagers.add(new TopicMenuDetailPager(context,datas.get(0)));
         pagers.add(new PhotosMenuDetailPager(context,datas.get(2)));
-        pagers.add(new TopicMenuDetailPager(context));
+        pagers.add(new InteractMenuDetailPager(context));
         pagers.add(new VoteMenuDetailPager(context));
 
         //2.得到左侧菜单
