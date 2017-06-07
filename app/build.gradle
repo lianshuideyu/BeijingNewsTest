@@ -39,4 +39,6 @@ dependencies {
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile project(':photoview')
     compile 'com.android.support:design:25.3.1'
+    compile files('libs/jcore-android_v1.1.3.jar')
+    compile files('libs/jpush-android_v3.0.6.jar')
 }
