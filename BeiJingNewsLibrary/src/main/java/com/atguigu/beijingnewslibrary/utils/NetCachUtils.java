@@ -29,15 +29,17 @@ public class NetCachUtils {
      */
     public static final int FAIL = 2;
     private final LocalCachUtils localCachUtils;
+    private final MemoryCachUtils memoryCachUtils;
 
     /**
      * 线程池类
      */
     private ExecutorService executorService;
 
-    public NetCachUtils(Handler handler, LocalCachUtils localCachUtils) {
+    public NetCachUtils(Handler handler, LocalCachUtils localCachUtils, MemoryCachUtils memoryCachUtils) {
         this.handler = handler;
         this.localCachUtils = localCachUtils;
+        this.memoryCachUtils = memoryCachUtils;
         executorService = Executors.newFixedThreadPool(10);
     }
 
@@ -68,6 +70,8 @@ public class NetCachUtils {
                         handler.sendMessage(msg);
 
                         //在内存中保存一份
+                        memoryCachUtils.putBitmap2Memory(imageUrl,bitmap);
+
                         //在本地中保存一份
                         localCachUtils.putBitmap2Local(imageUrl,bitmap);
                     }

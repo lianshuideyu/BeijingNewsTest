@@ -3,6 +3,7 @@ package com.atguigu.beijingnewslibrary.utils;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Environment;
+import android.util.Log;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -17,6 +18,12 @@ import java.io.FileOutputStream;
  */
 public class LocalCachUtils {
 
+    private final MemoryCachUtils memoryCachUtils;
+
+    public LocalCachUtils(MemoryCachUtils memoryCachUtils) {
+        this.memoryCachUtils = memoryCachUtils;
+    }
+
     public Bitmap getBitmap(String imageUrl) {
         try {
             //sdcard/beijingnews/ljsk;l;;llkkljhjjsk
@@ -29,6 +36,10 @@ public class LocalCachUtils {
             if(file.exists()) {
 
                 Bitmap bitmap = BitmapFactory.decodeStream(new FileInputStream(file));
+                if(bitmap != null) {
+                    memoryCachUtils.putBitmap2Memory(imageUrl,bitmap);
+                }
+                
                 return bitmap;
             }
         } catch (Exception e) {
@@ -65,6 +76,7 @@ public class LocalCachUtils {
                 file.createNewFile();
             }
 
+            Log.e("TAG","file=="+file.getAbsolutePath());
             //保存图片
             FileOutputStream fos = new FileOutputStream(file);
             //写入数据
