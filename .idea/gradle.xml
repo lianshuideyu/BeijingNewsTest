@@ -12,11 +12,13 @@
             <option value="$PROJECT_DIR$/AndroidAndH5" />
             <option value="$PROJECT_DIR$/AndroidAndJs-上课用" />
             <option value="$PROJECT_DIR$/BeiJingNewsLibrary" />
+            <option value="$PROJECT_DIR$/PhotoView-sample" />
             <option value="$PROJECT_DIR$/PullToRefresh_library" />
             <option value="$PROJECT_DIR$/PullToRefresh_sample" />
             <option value="$PROJECT_DIR$/SlidingMenu_library" />
             <option value="$PROJECT_DIR$/ViewPagerIndicator_library" />
             <option value="$PROJECT_DIR$/app" />
+            <option value="$PROJECT_DIR$/photoview" />
             <option value="$PROJECT_DIR$/pullToRefreshListFragment" />
             <option value="$PROJECT_DIR$/pullToRefreshViewPager" />
           </set>

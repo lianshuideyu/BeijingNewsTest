@@ -1,4 +1,4 @@
-include ':app', ':SlidingMenu_library', ':BeiJingNewsLibrary', ':AndroidAndH5', ':AndroidAndJs-上课用'
+include ':app', ':SlidingMenu_library', ':BeiJingNewsLibrary', ':AndroidAndH5', ':AndroidAndJs-上课用', ':PhotoView-sample', ':photoview'
 include ':ViewPagerIndicator_library'
 include ':PullToRefresh_library'
 include ':pullToRefreshListFragment'
