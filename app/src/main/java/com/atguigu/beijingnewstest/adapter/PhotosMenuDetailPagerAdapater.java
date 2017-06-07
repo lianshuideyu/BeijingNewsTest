@@ -101,6 +101,7 @@ public class PhotosMenuDetailPagerAdapater extends RecyclerView.Adapter<PhotosMe
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(holder.ivIcon);*/
 
+
         //使用自定义方式请求图片
         Bitmap bitmap = bitmapCacheUtils.getBitmap(imageUrl,position);
 

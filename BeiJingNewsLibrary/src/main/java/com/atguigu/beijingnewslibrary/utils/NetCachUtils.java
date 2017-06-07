@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Created by Administrator on 2017/6/7.
@@ -26,16 +28,24 @@ public class NetCachUtils {
     请求图片失败
      */
     public static final int FAIL = 2;
+    private final LocalCachUtils localCachUtils;
 
-    public NetCachUtils(Handler handler) {
+    /**
+     * 线程池类
+     */
+    private ExecutorService executorService;
+
+    public NetCachUtils(Handler handler, LocalCachUtils localCachUtils) {
         this.handler = handler;
+        this.localCachUtils = localCachUtils;
+        executorService = Executors.newFixedThreadPool(10);
     }
 
     public void getBitmapFromNet(final String imageUrl, final int position) {
 
-        //开启子线程请求网络
-        new Thread(){
-            public void run(){
+        executorService.execute(new Runnable() {
+            @Override
+            public void run() {
                 //使用原生的方法请求图片
                 try {
                     HttpURLConnection urlConnection = (HttpURLConnection) new URL(imageUrl).openConnection();
@@ -59,8 +69,8 @@ public class NetCachUtils {
 
                         //在内存中保存一份
                         //在本地中保存一份
+                        localCachUtils.putBitmap2Local(imageUrl,bitmap);
                     }
-
 
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -70,8 +80,15 @@ public class NetCachUtils {
                     msg.arg1 = position;
                     handler.sendMessage(msg);
                 }
+            }
+        });
+
+        //开启子线程请求网络
+        /*new Thread(){
+            public void run(){
+
 
             }
-        }.start();
+        }.start();*/
     }
 }
