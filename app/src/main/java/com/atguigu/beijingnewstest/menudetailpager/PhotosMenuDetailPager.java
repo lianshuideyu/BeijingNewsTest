@@ -115,7 +115,7 @@ public class PhotosMenuDetailPager extends MenuDetailBasePager {
             progressbar.setVisibility(View.GONE);
 
             //设置适配器
-            adapter = new PhotosMenuDetailPagerAdapater(context, datas);
+            adapter = new PhotosMenuDetailPagerAdapater(context, datas,recyclerview);
             recyclerview.setAdapter(adapter);
 
             //布局管理器不要忘记
