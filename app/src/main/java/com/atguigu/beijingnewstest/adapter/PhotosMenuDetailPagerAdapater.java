@@ -109,6 +109,7 @@ public class PhotosMenuDetailPagerAdapater extends RecyclerView.Adapter<PhotosMe
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = View.inflate(context, R.layout.item_photos, null);
         return new MyViewHolder(itemView);
+//        return null;
     }
 
     @Override

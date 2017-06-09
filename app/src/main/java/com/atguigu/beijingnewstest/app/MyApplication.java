@@ -3,6 +3,7 @@ package com.atguigu.beijingnewstest.app;
 import android.app.Application;
 import android.content.Context;
 
+import com.atguigu.beijingnewstest.exception.CrashHandler;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
@@ -44,6 +45,11 @@ public class MyApplication extends Application {
 
         //初始化imageloader初始化
         initImageLoader(getApplicationContext());
+
+        //异常处理的初始化
+        CrashHandler catchHandler = CrashHandler.getInstance();
+        catchHandler.init(getApplicationContext());
+
     }
 
     public static void initImageLoader(Context context) {
