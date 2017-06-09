@@ -20,7 +20,15 @@ import com.atguigu.beijingnewslibrary.utils.NetCachUtils;
 import com.atguigu.beijingnewstest.R;
 import com.atguigu.beijingnewstest.activity.PicassoSampleActivity;
 import com.atguigu.beijingnewstest.domain.PhotosMenuDetailPagerBean;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
+import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
+import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
+import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 
+import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -43,6 +51,13 @@ public class PhotosMenuDetailPagerAdapater extends RecyclerView.Adapter<PhotosMe
      * 3.网络缓存
      */
     private BitmapCacheUtils bitmapCacheUtils;
+
+    private DisplayImageOptions options;
+
+    private ImageLoadingListener animateFirstListener = new AnimateFirstDisplayListener();
+
+    protected ImageLoader imageLoader = ImageLoader.getInstance();
+
 
     private Handler handler = new Handler(){
 
@@ -77,6 +92,17 @@ public class PhotosMenuDetailPagerAdapater extends RecyclerView.Adapter<PhotosMe
         //把handler传过去
         bitmapCacheUtils = new BitmapCacheUtils(handler);
         this.recyclerview = recyclerview;
+
+        options = new DisplayImageOptions.Builder()
+                .showImageOnLoading(R.drawable.pic_item_list_default)
+                .showImageForEmptyUri(R.drawable.pic_item_list_default)
+                .showImageOnFail(R.drawable.pic_item_list_default)
+                .cacheInMemory(true)
+                .cacheOnDisk(true)
+                .considerExifParams(true)
+//                .displayer(new CircleBitmapDisplayer(Color.WHITE, 5))
+                .displayer(new RoundedBitmapDisplayer(30))
+                .build();
     }
 
     @Override
@@ -103,14 +129,17 @@ public class PhotosMenuDetailPagerAdapater extends RecyclerView.Adapter<PhotosMe
 
 
         //使用自定义方式请求图片
-        Bitmap bitmap = bitmapCacheUtils.getBitmap(imageUrl,position);
+//        Bitmap bitmap = bitmapCacheUtils.getBitmap(imageUrl,position);
+//
+//        //图片对应的TAG就是位置
+//        holder.ivIcon.setTag(position);
+//        if(bitmap != null) {//来自内存和本地，不包括网络
+//            holder.ivIcon.setImageBitmap(bitmap);
+//        }
 
-        //图片对应的TAG就是位置
-        holder.ivIcon.setTag(position);
-        if(bitmap != null) {//来自内存和本地，不包括网络
-            holder.ivIcon.setImageBitmap(bitmap);
-        }
 
+        //用imageloader请求土图片
+        imageLoader.displayImage(imageUrl, holder.ivIcon, options, animateFirstListener);
 
     }
 
@@ -139,6 +168,24 @@ public class PhotosMenuDetailPagerAdapater extends RecyclerView.Adapter<PhotosMe
 //                    Log.e("TAG","MyViewHolder--Position" + datas.get(getLayoutPosition()).getListimage());
                 }
             });
+        }
+    }
+
+
+    private static class AnimateFirstDisplayListener extends SimpleImageLoadingListener {
+
+        static final List<String> displayedImages = Collections.synchronizedList(new LinkedList<String>());
+
+        @Override
+        public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+            if (loadedImage != null) {
+                ImageView imageView = (ImageView) view;
+                boolean firstDisplay = !displayedImages.contains(imageUri);
+                if (firstDisplay) {
+                    FadeInBitmapDisplayer.animate(imageView, 500);
+                    displayedImages.add(imageUri);
+                }
+            }
         }
     }
 }

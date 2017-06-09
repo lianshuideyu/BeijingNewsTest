@@ -5,7 +5,7 @@
     android:padding="10dp"
     >
 
-
+<!---->
     <LinearLayout
         android:background="@drawable/photomenu_bg_selector"
         android:layout_width="match_parent"
